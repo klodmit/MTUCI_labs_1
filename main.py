@@ -35,4 +35,6 @@ P = ((AB + AC + BC) / 2)
 HA = ((2 * math.sqrt(P * (P - AB) * (P - AC) * (P - BC))) / AB)
 HB = ((2 * math.sqrt(P * (P - AB) * (P - AC) * (P - BC))) / AC)
 HC = ((2 * math.sqrt(P * (P - AB) * (P - AC) * (P - BC))) / BC)
-print("Высота HA", int(HA), "\nВысота HB", int(HB), "\nВысота HC", int(HC))
+print("Высота HA", int(HA),
+      "\nВысота HB", int(HB),
+      "\nВысота HC", int(HC))
