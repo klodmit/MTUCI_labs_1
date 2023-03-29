@@ -38,11 +38,12 @@ def comp(x, y):  # x, y -- float
     return x < y
 
 
-def my_sort(seq, comp):
+def my_sort(seq):
     for i in range(len(seq)):
-        x=seq[i-1]
-        y=seq[i]
-        if comp==True:
+        if comp(seq[i-1],seq[i])==True:
             return seq
+        else:
+            return "Что-то не так"
+        return comp
     return
-print(my_sort(seq10,comp))
+print(my_sort(seq10))
