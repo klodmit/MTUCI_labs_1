@@ -30,6 +30,7 @@ class Triangle:
         self.b = b
         self.c = c
 
+
     def lengths(self):
         """Поиск длин сторон треугольника"""
         A = math.sqrt((self.b[0] - self.c[0]) ** 2 + (self.b[1] - self.c[1]) ** 2)
@@ -101,10 +102,10 @@ heights = triangle.heights()
 print("Высоты треугольника:", heights)
 
 equilateral = triangle.equilateral()
-print("равносторонний:", equilateral)
+print("Равносторонний:", equilateral)
 
 isosceles = triangle.isosceles()
-print("равнобедренный:", isosceles)
+print("Равнобедренный:", isosceles)
 
 perimeter = triangle.perimeter()
 print("Периметр:", perimeter)
