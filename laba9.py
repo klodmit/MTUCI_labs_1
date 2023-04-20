@@ -41,7 +41,7 @@ def comp(x, y):  # x, y -- float
     return x < y
 
 
-def my_Sort(z, comparator):
+def mySort(z, comparator):
     """Функция сортировки реализована через сортировку "пузырьком" """
     for i in range(len(z) - 1):
         for j in range(len(z) - 2, i - 1, -1):
@@ -54,5 +54,5 @@ def my_Sort(z, comparator):
 start_time: float = time.time()
 n = 10
 for i in range(n):
-    my_Sort(seq1000, comp)
+    mySort(seq1000, comp)
     print((time.time() - start_time) / n)
