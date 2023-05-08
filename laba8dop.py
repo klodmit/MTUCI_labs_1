@@ -2,51 +2,57 @@
 # собирает её выполнение из функций. Программа для расчета траектории движения.
 import math
 
+import math
+
 y = 0
 x = 0
 
 
 def Up(a):
-    """"Функция описывает движение черепашки по y"""
     if a == 'up' or a == 'UP' or a == 'Up':
-        return y
+        global y
+        y = y + 1
     else:
-        return Exception
+        Exception
 
 
 def Left(a):
-    """"Функция описывает движение черепашки по x"""
     if a == 'left' or a == 'LEFT' or a == 'Left':
-        return x + 1
+        global x
+        x = x - 1
+
     else:
-        return Exception
+        Exception
 
 
 def Right(a):
-    """"Функция описывает движение черепашки по x"""
     if a == 'right' or a == 'RIGHT' or a == 'Right':
-        return x - 1
+        global x
+        x = x + 1
+
     else:
-        return Exception
+        Exception
 
 
 def Down(a):
-    """"Функция описывает движение черепашки по y"""
     if a == 'down' or a == 'DOWN' or a == 'Down':
-        return y - 1
+        global y
+        y = y - 1
     else:
-        return Exception
+        Exception
 
 
 n = ''
 while n != 'Stop':
     print("Желаете ли вы остановить черевашку. Если да введите Stop")
     n = input()
-    print('Если вы хотите чтоб черепашка пошла наверх. Напишите Up. Налево Left. Направо Right. Вниз Down')
+    print('Если вы хотите чтоб черепашка пошла наверх. Напишите. Налево Left. Направо Right. Вниз Down')
     a = input()
-    Up(a)
-    Left(a)
+
     Right(a)
     Down(a)
+    Up(a)
+    Left(a)
+
     print('Координаты черепашки')
     print(x, y)
