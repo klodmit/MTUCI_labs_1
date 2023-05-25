@@ -26,210 +26,226 @@
 # t3.A = (2.,0.)
 # # t3.A = (2.,0.5) # Эта строка выводит ValueError (не прямоугольный)
 
-import math
+def length(ax,bx,ay,by):
+    return ((ax - bx) ** 2 + (ay - by) ** 2) ** 0.5
 
-
-class Triangle:
-    """Класс треугольник, свойства и методы"""
-
-    def __init__(self, a, b, c):
-        self.a = a
-        self.b = b
-        self.c = c
-
-    def lengths(self):
-        """Поиск длин сторон треугольника"""
-        A = math.sqrt((self.b[0] - self.c[0]) ** 2 + (self.b[1] - self.c[1]) ** 2)
-        B = math.sqrt((self.a[0] - self.c[0]) ** 2 + (self.a[1] - self.c[1]) ** 2)
-        C = math.sqrt((self.a[0] - self.b[0]) ** 2 + (self.a[1] - self.b[1]) ** 2)
-        return A, B, C
-
-    def validate(self):
-        """Проверка существования треугольника"""
-        A, B, C = self.lengths()
-        if A <= 0 or B <= 0 or C <= 0:
-            raise ValueError("Значения сторон должны быть положительными.")
-        if A + B <= C or A + C <= B or B + C <= A:
-            raise ValueError("Треугольника не существует.")
-
-    def medians(self):
-        """Находим медианы треугольника"""
-        A, B, C = self.lengths()
-        ma = 0.5 * math.sqrt(2 * B ** 2 + 2 * C ** 2 - A ** 2)
-        mb = 0.5 * math.sqrt(2 * A ** 2 + 2 * C ** 2 - B ** 2)
-        mc = 0.5 * math.sqrt(2 * A ** 2 + 2 * B ** 2 - C ** 2)
-        return ma, mb, mc
-
-    def heights(self):
-        """Находим высоты треугольника"""
-        A, B, C = self.lengths()
-        s = (A + B + C) / 2
-        ha = 2 * math.sqrt(s * (s - A) * (s - B) * (s - C)) / A
-        hb = 2 * math.sqrt(s * (s - A) * (s - B) * (s - C)) / B
-        hc = 2 * math.sqrt(s * (s - A) * (s - B) * (s - C)) / C
-        return ha, hb, hc
-
-    def equilateral(self):
-        """Проверяем, является ли треугольник равносторонним"""
-        A, B, C = self.lengths()
-        return math.isclose(A, B) and math.isclose(A, C) and math.isclose(B, C)
-
-    def isosceles(self):
-        """Проверяем, является ли треугольник равнобедренным"""
-        A, B, C = self.lengths()
-        return math.isclose(A, B) or math.isclose(A, C) or math.isclose(B, C)
-
-    def perimeter(self):
-        """Находим периметр треугольника"""
-        A, B, C = self.lengths()
-        return A + B + C
-
-    def square(self):
-        """Находим площадь треугольника по формуле Герона"""
-        A, B, C = self.lengths()
-        p = (A + B + C) / 2
-        return math.sqrt(p * (p - A) * (p - B) * (p - C))
-
-    def rectangular(self):
-        """Проверяем, является ли треугольник прямоугольным"""
-        A, B, C = sorted(self.lengths())
-        return math.isclose(A ** 2 + B ** 2, C ** 2)
-
-    def __eq__(self, other):
-        """Сравнение"""
-        if self.a == other.a and self.b == other.b and self.c == other.c:
+class triangle():
+    """треугольник и действия с ним"""
+    def __init__(self,x1,y1,x2,y2,x3,y3):
+        self._x1 = x1
+        self._y1 = y1
+        self._x2 = x2
+        self._y2 = y2
+        self._x3 = x3
+        self._y3 = y3
+        self.type_check()
+        self.checking_coordinates()
+    def __str__(self):
+        return f'({self._x1}, {self._y1}, {self._x2}, {self._y2}, {self._x3}, {self._y3})'
+    def type_check(self):
+        if (type(self._x1) == float) and (type(self._x2) == float) and (type(self._x3) == float) and (type(self._y1) == float) and (type(self._y2) == float) and (type(self._y3) == float):
             return True
         else:
-            return False
+            raise TypeError('Неправильный тип треугольника')
+    def checking_coordinates(self):
+        if (self._x1 == self._x2 and self._y1 == self._y2) or (self._x1 == self._x3 and self._y1 == self._y3) or (self._x2 == self._x3 and self._y2 == self._y3):
+            raise ValueError('Ошибка значения')
+        else:
+            return True
+    def l12(self):
+        return length(self._x1, self._x2, self._y1, self._y2)
+    def l23(self):
+        return length(self._x2, self._x3, self._y2, self._y3)
+    def l13(self):
+        return length(self._x1, self._x3, self._y1, self._y3)
+    def __eq__(self, other):
+        return self.l12() == other.l12() and self.l23() == other.l23() and self.l13() == other.l13()
+    def medd(self):
+        # двойной индекс обозначает положение точки на стороне между точками с соответствующими одинарными соседними индексами
+        # например (x12,y12) координаты некоторой точки на стороне между точками (x1,y1) и (x2,y2)
+        x12 = (self._x1 + self._x2) / 2 # вычисления координат середины отрезка
+        y12 = (self._y1 + self._y2) / 2
+        x13 = (self._x1 + self._x3) / 2
+        y13 = (self._y1 + self._y3) / 2
+        x23 = (self._x2 + self._x3) / 2
+        y23 = (self._y2 + self._y3) / 2
+        med1 = length(self._x1, x23, self._y1, y23)
+        med2 = length(self._x2, x13, self._y2, y13)
+        med3 = length(self._x3, x12, self._y3, y12)
+        return round(med1,3), round(med2,3), round(med3,3)
+    def perimetr(self):
+        l12 = self.l12()
+        l23 = self.l23()
+        l13 = self.l13()
+        p = l12 + l13 + l23
+        return round(p,3)
+    def area(self):
+        p2 = self.perimetr() / 2  # полупериметр
+        s = (p2 * (p2 - self.l12()) * (p2 - self.l13()) * (p2 - self.l23())) ** 0.5  # площадь по формуле Герона
+        return round(s,0)
+    def __gt__(self, other):
+        return self.area() > other.area()
+    def high(self):
+        h1 = (2 * self.area()) / self.l23() # длина высоты опущенной из точки (x1,y1)
+        h2 = (2 * self.area()) / self.l13()
+        h3 = (2 * self.area()) / self.l12()
+        return round(h1,3), round(h2,3), round(h3,3)
+    def equilateral(self):
+        return self.l23() == self.l12() == self.l13()
 
-    def lengths2(self):
-        """Поиск длин сторон треугольника"""
-        A = math.sqrt((self.b[0] - self.c[0]) ** 2 + (self.b[1] - self.c[1]) ** 2)
-        B = math.sqrt((self.a[0] - self.c[0]) ** 2 + (self.a[1] - self.c[1]) ** 2)
-        C = math.sqrt((self.a[0] - self.b[0]) ** 2 + (self.a[1] - self.b[1]) ** 2)
-        return A, B, C
-
-    def medians2(self):
-        """Находим медианы треугольника"""
-        A, B, C = self.lengths()
-        ma = 0.5 * math.sqrt(2 * B ** 2 + 2 * C ** 2 - A ** 2)
-        mb = 0.5 * math.sqrt(2 * A ** 2 + 2 * C ** 2 - B ** 2)
-        mc = 0.5 * math.sqrt(2 * A ** 2 + 2 * B ** 2 - C ** 2)
-        return ma, mb, mc
-
-    def heights2(self):
-        """Находим высоты треугольника"""
-        A, B, C = self.lengths()
-        s = (A + B + C) / 2
-        ha = 2 * math.sqrt(s * (s - A) * (s - B) * (s - C)) / A
-        hb = 2 * math.sqrt(s * (s - A) * (s - B) * (s - C)) / B
-        hc = 2 * math.sqrt(s * (s - A) * (s - B) * (s - C)) / C
-        return ha, hb, hc
-
-    def equilateral2(self):
-        """Проверяем, является ли треугольник равносторонним"""
-        A, B, C = self.lengths()
-        return math.isclose(A, B) and math.isclose(A, C) and math.isclose(B, C)
-
-    def isosceles2(self):
-        """Проверяем, является ли треугольник равнобедренным"""
-        A, B, C = self.lengths()
-        return math.isclose(A, B) or math.isclose(A, C) or math.isclose(B, C)
-
-    def perimeter2(self):
-        """Находим периметр треугольника"""
-        A, B, C = self.lengths()
-        return A + B + C
-
-    def square2(self):
-        """Находим площадь треугольника по формуле Герона"""
-        A, B, C = self.lengths()
-        p = (A + B + C) / 2
-        return math.sqrt(p * (p - A) * (p - B) * (p - C))
-
-    def rectangular2(self):
-        """Проверяем, является ли треугольник прямоугольным"""
-        A, B, C = sorted(self.lengths())
-        return math.isclose(A ** 2 + B ** 2, C ** 2)
-
-
-class ImmutableTriangle(Triangle):
+    def isosceles(self):
+        if self.equilateral():
+            return True
+        return (self.l23() == self.l12()) or (self.l12() == self.l13()) or (self.l23() == self.l13())
+    # перегрузка функции
     @property
-    def P(self):
-        return self._P
+    def A(self):
+        return self._x1, self._y1
 
-    @P.setter
-    def P(self, P):
-        raise AttributeError
-
-    @property
-    def O(self):
-        return self._O
-
-    @O.setter
-    def O(self, O):
-        raise AttributeError
+    @A.setter
+    def A(self, d1=tuple()):
+        if type(d1[0]) == type(d1[1]) == float:
+            self._x1 = d1[0]
+            self._y1 = d1[1]
+        else:
+            raise TypeError('Неправильный тип треугольника')
 
     @property
-    def H(self):
-        return self._H
+    def B(self):
+        return self._x2, self._y2
 
-    @H.setter
-    def H(self, H):
-        raise AttributeError
+    @B.setter
+    def B(self, d2=tuple()):
+        if type(d2[0]) == type(d2[1]) == float:
+            self._x2 = d2[0]
+            self._y2 = d2[1]
+        else:
+            raise TypeError('Неправильный тип треугольника')
 
+    @property
+    def C(self):
+        return self._x3, self._y3
 
-triangle = Triangle((7, 5), (8, 6), (10, 8))  # A,B,C соответственно из лаб. работы №2
-t2 = Triangle((1, 6), (2, 3), (4, 1))
-triangle3 = ImmutableTriangle((1., 0.), (2., 0.), (0., 1.))
+    @C.setter
+    def C(self, d3=tuple()):
+        if type(d3[0]) == type(d3[1]) == float:
+            self._x3 = d3[0]
+            self._y3 = d3[1]
+        else:
+            raise TypeError('Неправильный тип треугольника')
 
-medians = triangle.medians()
-print("Медианы треугольника:", medians)
+class immutabletriangle(triangle):
+    """неизменяемый треугольник"""
+    @property
+    def A(self):
+        return self._x1, self._y1
 
-heights2 = triangle.heights()
-print("Высоты треугольника:", heights2)
+    @property
+    def B(self):
+        return self._x2, self._y2
 
-equilateral2 = triangle.equilateral()
-print("Равносторонний:", equilateral2)
+    @property
+    def C(self):
+        return self._x3, self._y3
 
-isosceles2 = triangle.isosceles()
-print("Равнобедренный:", isosceles2)
+class rectriangle(triangle):
+    """прямоугольный треугольник"""
+    def __init__(self,x1,y1,x2,y2,x3,y3):
+        super().__init__(x1,y1,x2,y2,x3,y3)
+        self.checking_rectangular()
+    def checking_rectangular(self):
+        l12 = self.l12()
+        l23 = self.l23()
+        l13 = self.l13()
+        jag = [l12, l13, l23]
+        jag.sort()
+        self._gip = jag[2]  # гипотенуза
+        self._kat1 = jag[1]  # катет
+        self._kat2 = jag[0]  # катет
+        if (abs(self._gip ** 2 - ((self._kat1 ** 2) + (self._kat2 ** 2))) > 0.000000000001):
+            if (self._gip ** 2 != (self._kat1 ** 2) + (self._kat2 ** 2)):
+                raise ValueError('не прямоугольный треугольник')
 
-perimeter2 = triangle.perimeter()
-print("Периметр:", perimeter2)
+    @property
+    def A(self):
+        return self._x1, self._y1
 
-square = triangle.square()
-print("Площадь:", square)
+    @property
+    def B(self):
+        return self._x2, self._y2
 
-medians2 = triangle.medians2()
-print("Медианы треугольника:", medians2)
+    @property
+    def C(self):
+        return self._x3, self._y3
 
-heights2 = triangle.heights2()
-print("Высоты треугольника:", heights2)
+    @A.setter
+    def A(self, d3=tuple()):
+        if type(d3[0]) == type(d3[1]) == float:
+            self._x1 = d3[0]
+            self._y1 = d3[1]
+            self.checking_rectangular()
+        else:
+            raise TypeError('Неправильный тип треугольника')
 
-equilateral2 = triangle.equilateral2()
-print("Равносторонний:", equilateral2)
+    @B.setter
+    def B(self, d3=tuple()):
+        if type(d3[0]) == type(d3[1]) == float:
+            self._x2 = d3[0]
+            self._y2 = d3[1]
+            self.checking_rectangular()
+        else:
+            raise TypeError('Неправильный тип треугольника')
 
-isosceles2 = triangle.isosceles2()
-print("Равнобедренный:", isosceles2)
+    @C.setter
+    def C(self, d3=tuple()):
+        if type(d3[0]) == type(d3[1]) == float:
+            self._x3 = d3[0]
+            self._y3 = d3[1]
+            self.checking_rectangular()
+        else:
+            raise TypeError('Неправильный тип треугольника')
 
-perimeter2 = triangle.perimeter2()
-print("Периметр:", perimeter2)
-
-square2 = triangle.square2()
-print("Площадь:", square2)
-
-if triangle == t2:
+t1 = triangle(11.,4.,7.,8.,3.,4.)
+t2 = triangle(11.,4.,11.,5.,3.,4.)
+print(t1.medd(),"- медианы")
+print(t1.high(),"- высоты")
+print(t1.perimetr(),"- периметр")
+print(t1.area(),"- площадь")
+print("равносторонний -",t1.equilateral())
+print("равнобедренный -",t1.isosceles())
+print("---------------------------------------")
+print(t2.medd(),"- медианы")
+print(t2.high(),"- высоты")
+print(t2.perimetr(),"- периметр")
+print(t2.area(),"- площадь")
+print("равносторонний -",t2.equilateral())
+print("равнобедренный -",t2.isosceles())
+print("---------------------------------------")
+if t2 == t1:
     print("Треугольники равны")
 else:
     print("Треугольники не равны")
-
-if square==square2:
-    print("Площади равны")
+print("---------------------------------------")
+if t1 > t2:
+    print('Первый треугольник больше')
 else:
-    print("Площади не равны")
-
-rectangular = triangle.rectangular()
-print("Проверка первого треугольника на прямой угол:", rectangular)
-rectangular2 = t2.rectangular2()
-print("Проверка второго треугольника на прямой угол:", rectangular2)
+    print('Второй треугольник больше или равен')
+print("---------------------------------------")
+print(t1.A,t1.B,t1.C)
+t1.A = (12.0, 7.0)
+t1.B = (5.0, 3.0)
+t1.C = (9.0, 6.0)
+print(t1.A,t1.B,t1.C)
+print("---------------------------------------")
+t3 = rectriangle(2.,4.,2.,7.,5.,4.)
+# t3.A = (12.0, 7.0)
+print(t3)
+print("---------------------------------------")
+t4 = immutabletriangle(3.,6.,4.,8.,5.,7.)
+# t4.A = (9.0, 4.0)
+print(t4.A,t4.B,t4.C)
+print("---------------------------------------")
+print(t1, "- 1 треугольник")
+print(t2, "- 2 треугольник")
+print(t3, "- 3 треугольник")
+print(t4, "- 4 треугольник")
