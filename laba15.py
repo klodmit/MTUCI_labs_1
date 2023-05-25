@@ -23,3 +23,24 @@
 # l_str = ["12", "13", "15"]
 # map_str_fl = map(float, l_str) # map_str_fl: Объект map
 # t_fl = tuple(map_str_fl) # t_fl: (12.0, 13.0, 15.0)
+import csv
+
+
+with open('winequality-red.csv', newline='') as csvfile:
+    data_reader = csv.reader(csvfile, delimiter=',')
+    data_list = [row for row in data_reader]
+
+
+print(data_list[:5])
+
+import numpy as np
+
+data_array = np.array(data_list[1:], dtype=float)
+parameters = data_array[:, :-1]
+quality = data_array[:, -1]
+print("---------------------------------------------------")
+print("Первые 5 образцов:")
+print("---------------------------------------------------")
+print(parameters[:5])
+print("---------------------------------------------------")
+print(quality[:5])
